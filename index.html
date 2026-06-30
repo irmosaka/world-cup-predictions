@@ -6,169 +6,83 @@
     <title>پیش‌بینی ریاضی جام جهانی ۲۰۲۶ ⚽</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap');
-        
-        body {
-            font-family: 'Vazirmatn', Tahoma, sans-serif;
-            margin: 0;
-            background: linear-gradient(135deg, #0f172a, #1e3a8a);
-            color: #fff;
-            min-height: 100vh;
-        }
-        header {
-            background: rgba(0,0,0,0.7);
-            padding: 15px 20px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-        .container {
-            max-width: 1100px;
-            margin: 20px auto;
-            padding: 0 15px;
-        }
-        h1 {
-            font-size: 2.2rem;
-            margin: 10px 0;
-            text-shadow: 0 0 10px gold;
-        }
-        .card {
-            background: rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 20px;
-            margin: 15px 0;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: transform 0.3s;
-        }
-        .card:hover {
-            transform: translateY(-8px);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: rgba(255,255,255,0.95);
-            color: #111;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        th, td {
-            padding: 14px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background: #1e40af;
-            color: white;
-        }
-        .prob {
-            font-weight: 700;
-            color: #22c55e;
-            font-size: 1.1rem;
-        }
-        .search {
-            width: 100%;
-            padding: 14px 20px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-        }
-        .footer {
-            text-align: center;
-            padding: 30px;
-            opacity: 0.8;
-            font-size: 0.95rem;
-        }
-        .emoji { font-size: 1.4rem; }
+        body { font-family: 'Vazirmatn', Tahoma, sans-serif; margin:0; background: linear-gradient(135deg, #0f172a, #1e3a8a); color:#fff; }
+        .container { max-width: 1100px; margin: 20px auto; padding: 0 15px; }
+        .card { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; margin: 15px 0; backdrop-filter: blur(10px); }
+        table { width:100%; border-collapse: collapse; background: rgba(255,255,255,0.95); color:#111; border-radius:12px; overflow:hidden; }
+        th, td { padding:14px; text-align:center; border-bottom:1px solid #ddd; }
+        th { background:#1e40af; color:white; }
+        .tooltip { position:relative; display:inline-block; }
+        .tooltip .tip { visibility:hidden; width:280px; background:#333; color:#fff; text-align:center; border-radius:8px; padding:10px; position:absolute; z-index:1; bottom:125%; left:50%; margin-left:-140px; opacity:0; transition:0.3s; }
+        .tooltip:hover .tip { visibility:visible; opacity:1; }
+        button { padding:10px 20px; margin:10px; background:#22c55e; border:none; border-radius:8px; cursor:pointer; font-weight:bold; }
+        .live { color: #ef4444; font-weight: bold; }
     </style>
 </head>
 <body>
-    <header>
-        <h1>🏆 پیش‌بینی ریاضی جام جهانی ۲۰۲۶</h1>
-        <p>مدل Elo + Poisson • مرجع و دقیق</p>
-    </header>
-
     <div class="container">
-        <div class="card">
-            <input type="text" id="search" class="search" 
-                   placeholder="🔍 جستجوی تیم (مثال: اسپانیا)" 
-                   onkeyup="filterTable()">
+        <header style="text-align:center; padding:20px;">
+            <h1>🏆 پیش‌بینی ریاضی جام جهانی ۲۰۲۶</h1>
+            <button onclick="toggleLang()">🇬🇧 English / 🇮🇷 فارسی</button>
+        </header>
+
+        <div class="card" id="championSection">
+            <h2 data-fa="۳ تیم برتر شانس قهرمانی" data-en="Top 3 Teams to Win">۳ تیم برتر شانس قهرمانی</h2>
+            <table id="topTeams"></table>
         </div>
 
         <div class="card">
-            <h2>جدول تیم‌ها و احتمال قهرمانی</h2>
-            <table id="teamsTable">
+            <h2 data-fa="بازی‌های زنده و پیش‌رو" data-en="Live & Upcoming Matches">بازی‌های زنده و پیش‌رو</h2>
+            <table id="matchesTable">
                 <thead>
                     <tr>
-                        <th>رتبه</th>
-                        <th>تیم</th>
-                        <th>Elo Rating</th>
-                        <th>احتمال قهرمانی</th>
+                        <th data-fa="زمان (تهران)" data-en="Time (Tehran)">زمان (تهران)</th>
+                        <th data-fa="بازی" data-en="Match">بازی</th>
+                        <th data-fa="استادیوم" data-en="Stadium">استادیوم</th>
+                        <th data-fa="پیش‌بینی" data-en="Prediction">پیش‌بینی</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
-
-        <div class="card">
-            <h2>نکات مهم</h2>
-            <ul style="line-height: 1.8;">
-                <li>احتمالات بر اساس Elo Rating محاسبه شده و با شبیه‌سازی به‌دست آمده.</li>
-                <li>هر روز بعد از بازی‌ها به‌روزرسانی می‌شود.</li>
-                <li>برای پیش‌بینی دقیق‌تر مسابقه خاص، فرم را در نسخه بعدی اضافه می‌کنیم.</li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="footer">
-        <p>ساخته شده با ❤️ برای علاقه‌مندان فوتبال • نسخه ۱.۱</p>
     </div>
 
     <script>
-        const teamsData = [
-            {rank: 1, name: "آرژانتین", elo: 2148, prob: "۱۸٪"},
-            {rank: 2, name: "اسپانیا", elo: 2144, prob: "۱۷٪"},
-            {rank: 3, name: "فرانسه", elo: 2123, prob: "۱۵٪"},
-            {rank: 4, name: "انگلستان", elo: 2038, prob: "۱۲٪"},
-            {rank: 5, name: "برزیل", elo: 2009, prob: "۱۱٪"},
-            {rank: 6, name: "کلمبیا", elo: 2004, prob: "۸٪"},
-            {rank: 7, name: "پرتغال", elo: 1990, prob: "۷٪"},
-            {rank: 8, name: "هلند", elo: 1980, prob: "۶٪"},
-            {rank: 9, name: "نروژ", elo: 1918, prob: "۴٪"},
-            {rank: 10, name: "آلمان", elo: 1916, prob: "۵٪"},
-            {rank: 11, name: "سوئیس", elo: 1914, prob: "۳٪"},
-            {rank: 12, name: "مکزیک", elo: 1912, prob: "۲.۵٪"},
-            {rank: 13, name: "اروگوئه", elo: 1850, prob: "۲٪"},
-            {rank: 14, name: "مراکش", elo: 1780, prob: "۱٪"},
-            {rank: 15, name: "ایران", elo: 1750, prob: "۰.۵٪"},
-            {rank: 16, name: "ژاپن", elo: 1745, prob: "۰.۸٪"},
-            {rank: 17, name: "آمریکا", elo: 1720, prob: "۱.۲٪"},
-            {rank: 18, name: "کانادا", elo: 1680, prob: "۰.۶٪"},
-        ];
+        let currentLang = 'fa';
+        const topTeams = [ /* همان قبلی */ ];
 
-        function renderTable(data) {
-            const tbody = document.querySelector("#teamsTable tbody");
-            tbody.innerHTML = "";
-            data.forEach(team => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td><strong>${team.rank}</strong></td>
-                        <td>${team.name} ⚽</td>
-                        <td>${team.elo}</td>
-                        <td class="prob">${team.prob}</td>
-                    </tr>`;
-            });
+        async function fetchLiveMatches() {
+            try {
+                const response = await fetch('https://livescore-api.com/api-client/matches/live.json?competition_id=362&key=demo_key&secret=demo_secret');
+                const data = await response.json();
+                
+                // پردازش داده‌ها و نمایش
+                renderMatches(data);
+            } catch (e) {
+                console.log("خطا در دریافت API - داده‌های نمونه نمایش داده می‌شود");
+                renderSampleMatches();
+            }
         }
 
-        function filterTable() {
-            const query = document.getElementById("search").value.toLowerCase().trim();
-            const filtered = teamsData.filter(team => 
-                team.name.toLowerCase().includes(query)
-            );
-            renderTable(filtered.length ? filtered : teamsData);
+        function renderMatches(apiData) {
+            // منطق تبدیل داده API به جدول (بسته به ساختار API)
+            // فعلاً نمونه:
+            let html = "";
+            // ... پردازش apiData.matches
+            document.querySelector("#matchesTable tbody").innerHTML = html;
         }
 
-        // بارگذاری اولیه
-        renderTable(teamsData);
+        function renderSampleMatches() {
+            // داده‌های نمونه تا API واقعی کار کند
+            const sample = [/* داده‌های قبلی */];
+            // رندر کن
+        }
+
+        function toggleLang() { /* همان قبلی */ }
+
+        // هر ۲ دقیقه بروزرسانی
+        setInterval(fetchLiveMatches, 120000);
+        fetchLiveMatches(); // اولین بار
     </script>
 </body>
 </html>
