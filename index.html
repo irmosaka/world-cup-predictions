@@ -2,72 +2,39 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پیش‌بینی ریاضی جام جهانی ۲۰۲۶</title>
+    <title>پیش‌بینی جام جهانی ۲۰۲۶</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap');
-        body {font-family: 'Vazirmatn', sans-serif; margin:0; background: linear-gradient(135deg, #0f172a, #1e3a8a); color:#fff;}
-        .container {max-width: 1100px; margin:20px auto; padding:15px;}
-        .card {background:rgba(255,255,255,0.1); border-radius:12px; padding:20px; margin:15px 0; backdrop-filter:blur(10px);}
-        table {width:100%; border-collapse:collapse; background:rgba(255,255,255,0.95); color:#111; border-radius:12px; overflow:hidden;}
-        th, td {padding:14px; text-align:center; border-bottom:1px solid #ddd;}
-        th {background:#1e40af; color:white;}
-        .live {color:#ef4444; font-weight:bold;}
+        body { font-family: Tahoma; background: #0f172a; color: white; text-align: center; padding: 20px; }
+        table { width: 100%; margin: 20px 0; border-collapse: collapse; }
+        th, td { border: 1px solid #666; padding: 12px; }
+        th { background: #1e40af; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 style="text-align:center;">🏆 پیش‌بینی ریاضی جام جهانی ۲۰۲۶</h1>
-        <button onclick="toggleLang()" style="display:block;margin:10px auto;">🇬🇧 / 🇮🇷</button>
+    <h1>🏆 پیش‌بینی جام جهانی ۲۰۲۶</h1>
+    <p>در حال بارگذاری داده‌ها...</p>
 
-        <div class="card">
-            <h2>۳ تیم برتر</h2>
-            <table id="topTeams"></table>
-        </div>
-
-        <div class="card">
-            <h2>بازی‌های زنده و پیش‌رو</h2>
-            <table id="matchesTable"><thead><tr><th>زمان</th><th>بازی</th><th>پیش‌بینی</th></tr></thead><tbody></tbody></table>
-        </div>
-    </div>
+    <table id="table">
+        <thead><tr><th>بازی</th><th>زمان</th><th>پیش‌بینی</th></tr></thead>
+        <tbody></tbody>
+    </table>
 
     <script>
-        let lang = 'fa';
-
-        async function loadData() {
+        async function load() {
             try {
-                // استفاده از API خودت
-                const res = await fetch('https://your-deployed-api.onrender.com/matches'); // آدرس API خودت رو بگذار
+                const res = await fetch('https://your-api-link.com/matches'); // ← اینجا بعداً عوض می‌کنیم
                 const data = await res.json();
-
-                // رندر جدول‌ها با داده‌های API
-                renderTopTeams(data.top || []);
-                renderMatches(data.matches || []);
+                let html = "";
+                data.forEach(m => {
+                    html += `<tr><td>${m.home} vs ${m.away}</td><td>${m.time}</td><td>${m.pred}</td></tr>`;
+                });
+                document.querySelector("#table tbody").innerHTML = html;
             } catch(e) {
-                console.log("در حال استفاده از داده محلی...");
+                document.querySelector("p").innerHTML = "فعلاً داده‌ها آماده نیست. بعداً امتحان کن.";
             }
         }
-
-        function renderTopTeams(teams) {
-            // پیاده‌سازی مشابه قبل
-        }
-
-        function renderMatches(matches) {
-            let html = "";
-            matches.forEach(m => {
-                html += `<tr><td>${m.date}</td><td>${m.home} vs ${m.away}</td><td>${m.prediction || '-'}</td></tr>`;
-            });
-            document.querySelector("#matchesTable tbody").innerHTML = html;
-        }
-
-        function toggleLang() {
-            lang = lang === 'fa' ? 'en' : 'fa';
-            loadData();
-        }
-
-        // بروزرسانی خودکار هر ۳ دقیقه
-        setInterval(loadData, 180000);
-        loadData();
+        load();
+        setInterval(load, 300000); // هر ۵ دقیقه بروز شود
     </script>
 </body>
 </html>
