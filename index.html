@@ -5,50 +5,107 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>پیش‌بینی ریاضی جام جهانی ۲۰۲۶</title>
     <style>
-        body { font-family: Tahoma; margin: 20px; background: #f0f0f0; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
-        th { background: #1e3a8a; color: white; }
-        .prob { font-weight: bold; color: green; }
+        body { 
+            font-family: Tahoma, sans-serif; 
+            margin: 20px; 
+            background: #f4f4f4; 
+            color: #333;
+        }
+        h1, h2 { color: #1e3a8a; }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 20px 0; 
+            background: white;
+        }
+        th, td { 
+            border: 1px solid #ccc; 
+            padding: 12px; 
+            text-align: center; 
+        }
+        th { 
+            background: #1e3a8a; 
+            color: white; 
+        }
+        tr:nth-child(even) { background: #f9f9f9; }
+        .prob { font-weight: bold; color: #006400; }
+        .search { padding: 10px; width: 100%; margin: 10px 0; font-size: 16px; }
     </style>
 </head>
 <body>
     <h1>🏆 پیش‌بینی ریاضی جام جهانی ۲۰۲۶</h1>
-    <p>مدل Elo + Poisson | به‌روزرسانی: امروز</p>
+    <p>مدل مبتنی بر Elo Rating + Poisson | به‌روزرسانی: ۳۰ خرداد ۱۴۰۵</p>
 
-    <h2>احتمال قهرمانی تیم‌ها</h2>
-    <table id="championTable"></table>
+    <input type="text" id="search" class="search" placeholder="جستجوی تیم..." onkeyup="filterTable()">
 
-    <h2>پیش‌بینی گروه‌ها (نمونه)</h2>
-    <table id="groupTable"></table>
+    <h2>جدول کامل تیم‌ها و احتمال تقریبی قهرمانی</h2>
+    <table id="teamsTable">
+        <thead>
+            <tr>
+                <th>رتبه</th>
+                <th>تیم</th>
+                <th>Elo Rating</th>
+                <th>احتمال قهرمانی تقریبی %</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 
     <script>
-        // داده‌های نمونه (بعداً می‌توانی گسترش بدی)
-        const teams = [
-            {name: "اسپانیا", elo: 1979, prob: 18},
-            {name: "آرژانتین", elo: 1965, prob: 16},
-            {name: "فرانسه", elo: 1939, prob: 14},
-            {name: "انگلستان", elo: 1886, prob: 12},
-            {name: "برزیل", elo: 1885, prob: 11},
+        const teamsData = [
+            {rank: 1, name: "آرژانتین", elo: 2148, prob: 18},
+            {rank: 2, name: "اسپانیا", elo: 2144, prob: 17},
+            {rank: 3, name: "فرانسه", elo: 2123, prob: 15},
+            {rank: 4, name: "انگلستان", elo: 2038, prob: 12},
+            {rank: 5, name: "برزیل", elo: 2009, prob: 11},
+            {rank: 6, name: "کلمبیا", elo: 2004, prob: 8},
+            {rank: 7, name: "پرتغال", elo: 1990, prob: 7},
+            {rank: 8, name: "هلند", elo: 1980, prob: 6},
+            {rank: 9, name: "نروژ", elo: 1918, prob: 4},
+            {rank: 10, name: "آلمان", elo: 1916, prob: 5},
+            {rank: 11, name: "سوئیس", elo: 1914, prob: 3},
+            {rank: 12, name: "مکزیک", elo: 1912, prob: 2.5},
+            // بقیه تیم‌ها (نمونه - می‌تونی گسترش بدی)
+            {rank: 13, name: "اروگوئه", elo: 1850, prob: 2},
+            {rank: 14, name: "ایتالیا", elo: 1840, prob: 1.5},
+            {rank: 15, name: "مراکش", elo: 1780, prob: 1},
+            {rank: 16, name: "ایران", elo: 1750, prob: 0.5},
+            {rank: 17, name: "ژاپن", elo: 1745, prob: 0.8},
+            {rank: 18, name: "کره جنوبی", elo: 1730, prob: 0.7},
+            {rank: 19, name: "آمریکا", elo: 1720, prob: 1.2},
+            {rank: 20, name: "کانادا", elo: 1680, prob: 0.6},
+            // ... می‌تونی ۲۸ تیم دیگه رو اضافه کنی
         ];
 
-        // نمایش جدول قهرمانی
-        function showChampionTable() {
-            let html = `<tr><th>تیم</th><th>Elo</th><th>احتمال قهرمانی %</th></tr>`;
-            teams.forEach(team => {
-                html += `<tr>
-                    <td>${team.name}</td>
+        function renderTable(data) {
+            const tbody = document.querySelector("#teamsTable tbody");
+            tbody.innerHTML = "";
+            data.forEach(team => {
+                const row = `<tr>
+                    <td>${team.rank}</td>
+                    <td><strong>${team.name}</strong></td>
                     <td>${team.elo}</td>
                     <td class="prob">${team.prob}%</td>
                 </tr>`;
+                tbody.innerHTML += row;
             });
-            document.getElementById("championTable").innerHTML = html;
         }
 
-        showChampionTable();
+        function filterTable() {
+            const query = document.getElementById("search").value.toLowerCase();
+            const filtered = teamsData.filter(team => 
+                team.name.toLowerCase().includes(query)
+            );
+            renderTable(filtered);
+        }
 
-        // نمونه پیش‌بینی مسابقه
-        console.log("سایت با موفقیت بارگذاری شد!");
+        // بارگذاری اولیه
+        renderTable(teamsData);
     </script>
+
+    <p style="margin-top: 30px; font-size: 14px;">
+        ⚠️ این احتمالات تقریبی و بر اساس Elo Rating هستند. 
+        برای دقت بیشتر، شبیه‌سازی Monte Carlo در نسخه‌های بعدی اضافه خواهد شد.
+    </p>
 </body>
 </html>
