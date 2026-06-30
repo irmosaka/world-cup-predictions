@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پیش‌بینی ریاضی جام جهانی ۲۰۲۶</title>
+    <style>
+        body { font-family: Tahoma; margin: 20px; background: #f0f0f0; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+        th { background: #1e3a8a; color: white; }
+        .prob { font-weight: bold; color: green; }
+    </style>
+</head>
+<body>
+    <h1>🏆 پیش‌بینی ریاضی جام جهانی ۲۰۲۶</h1>
+    <p>مدل Elo + Poisson | به‌روزرسانی: امروز</p>
+
+    <h2>احتمال قهرمانی تیم‌ها</h2>
+    <table id="championTable"></table>
+
+    <h2>پیش‌بینی گروه‌ها (نمونه)</h2>
+    <table id="groupTable"></table>
+
+    <script>
+        // داده‌های نمونه (بعداً می‌توانی گسترش بدی)
+        const teams = [
+            {name: "اسپانیا", elo: 1979, prob: 18},
+            {name: "آرژانتین", elo: 1965, prob: 16},
+            {name: "فرانسه", elo: 1939, prob: 14},
+            {name: "انگلستان", elo: 1886, prob: 12},
+            {name: "برزیل", elo: 1885, prob: 11},
+        ];
+
+        // نمایش جدول قهرمانی
+        function showChampionTable() {
+            let html = `<tr><th>تیم</th><th>Elo</th><th>احتمال قهرمانی %</th></tr>`;
+            teams.forEach(team => {
+                html += `<tr>
+                    <td>${team.name}</td>
+                    <td>${team.elo}</td>
+                    <td class="prob">${team.prob}%</td>
+                </tr>`;
+            });
+            document.getElementById("championTable").innerHTML = html;
+        }
+
+        showChampionTable();
+
+        // نمونه پیش‌بینی مسابقه
+        console.log("سایت با موفقیت بارگذاری شد!");
+    </script>
+</body>
+</html>
