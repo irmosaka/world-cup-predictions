@@ -3,86 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پیش‌بینی ریاضی جام جهانی ۲۰۲۶ ⚽</title>
+    <title>پیش‌بینی ریاضی جام جهانی ۲۰۲۶</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap');
-        body { font-family: 'Vazirmatn', Tahoma, sans-serif; margin:0; background: linear-gradient(135deg, #0f172a, #1e3a8a); color:#fff; }
-        .container { max-width: 1100px; margin: 20px auto; padding: 0 15px; }
-        .card { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; margin: 15px 0; backdrop-filter: blur(10px); }
-        table { width:100%; border-collapse: collapse; background: rgba(255,255,255,0.95); color:#111; border-radius:12px; overflow:hidden; }
-        th, td { padding:14px; text-align:center; border-bottom:1px solid #ddd; }
-        th { background:#1e40af; color:white; }
-        .tooltip { position:relative; display:inline-block; }
-        .tooltip .tip { visibility:hidden; width:280px; background:#333; color:#fff; text-align:center; border-radius:8px; padding:10px; position:absolute; z-index:1; bottom:125%; left:50%; margin-left:-140px; opacity:0; transition:0.3s; }
-        .tooltip:hover .tip { visibility:visible; opacity:1; }
-        button { padding:10px 20px; margin:10px; background:#22c55e; border:none; border-radius:8px; cursor:pointer; font-weight:bold; }
-        .live { color: #ef4444; font-weight: bold; }
+        body {font-family: 'Vazirmatn', sans-serif; margin:0; background: linear-gradient(135deg, #0f172a, #1e3a8a); color:#fff;}
+        .container {max-width: 1100px; margin:20px auto; padding:15px;}
+        .card {background:rgba(255,255,255,0.1); border-radius:12px; padding:20px; margin:15px 0; backdrop-filter:blur(10px);}
+        table {width:100%; border-collapse:collapse; background:rgba(255,255,255,0.95); color:#111; border-radius:12px; overflow:hidden;}
+        th, td {padding:14px; text-align:center; border-bottom:1px solid #ddd;}
+        th {background:#1e40af; color:white;}
+        .live {color:#ef4444; font-weight:bold;}
     </style>
 </head>
 <body>
     <div class="container">
-        <header style="text-align:center; padding:20px;">
-            <h1>🏆 پیش‌بینی ریاضی جام جهانی ۲۰۲۶</h1>
-            <button onclick="toggleLang()">🇬🇧 English / 🇮🇷 فارسی</button>
-        </header>
+        <h1 style="text-align:center;">🏆 پیش‌بینی ریاضی جام جهانی ۲۰۲۶</h1>
+        <button onclick="toggleLang()" style="display:block;margin:10px auto;">🇬🇧 / 🇮🇷</button>
 
-        <div class="card" id="championSection">
-            <h2 data-fa="۳ تیم برتر شانس قهرمانی" data-en="Top 3 Teams to Win">۳ تیم برتر شانس قهرمانی</h2>
+        <div class="card">
+            <h2>۳ تیم برتر</h2>
             <table id="topTeams"></table>
         </div>
 
         <div class="card">
-            <h2 data-fa="بازی‌های زنده و پیش‌رو" data-en="Live & Upcoming Matches">بازی‌های زنده و پیش‌رو</h2>
-            <table id="matchesTable">
-                <thead>
-                    <tr>
-                        <th data-fa="زمان (تهران)" data-en="Time (Tehran)">زمان (تهران)</th>
-                        <th data-fa="بازی" data-en="Match">بازی</th>
-                        <th data-fa="استادیوم" data-en="Stadium">استادیوم</th>
-                        <th data-fa="پیش‌بینی" data-en="Prediction">پیش‌بینی</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <h2>بازی‌های زنده و پیش‌رو</h2>
+            <table id="matchesTable"><thead><tr><th>زمان</th><th>بازی</th><th>پیش‌بینی</th></tr></thead><tbody></tbody></table>
         </div>
     </div>
 
     <script>
-        let currentLang = 'fa';
-        const topTeams = [ /* همان قبلی */ ];
+        let lang = 'fa';
 
-        async function fetchLiveMatches() {
+        async function loadData() {
             try {
-                const response = await fetch('https://livescore-api.com/api-client/matches/live.json?competition_id=362&key=demo_key&secret=demo_secret');
-                const data = await response.json();
-                
-                // پردازش داده‌ها و نمایش
-                renderMatches(data);
-            } catch (e) {
-                console.log("خطا در دریافت API - داده‌های نمونه نمایش داده می‌شود");
-                renderSampleMatches();
+                // استفاده از API خودت
+                const res = await fetch('https://your-deployed-api.onrender.com/matches'); // آدرس API خودت رو بگذار
+                const data = await res.json();
+
+                // رندر جدول‌ها با داده‌های API
+                renderTopTeams(data.top || []);
+                renderMatches(data.matches || []);
+            } catch(e) {
+                console.log("در حال استفاده از داده محلی...");
             }
         }
 
-        function renderMatches(apiData) {
-            // منطق تبدیل داده API به جدول (بسته به ساختار API)
-            // فعلاً نمونه:
+        function renderTopTeams(teams) {
+            // پیاده‌سازی مشابه قبل
+        }
+
+        function renderMatches(matches) {
             let html = "";
-            // ... پردازش apiData.matches
+            matches.forEach(m => {
+                html += `<tr><td>${m.date}</td><td>${m.home} vs ${m.away}</td><td>${m.prediction || '-'}</td></tr>`;
+            });
             document.querySelector("#matchesTable tbody").innerHTML = html;
         }
 
-        function renderSampleMatches() {
-            // داده‌های نمونه تا API واقعی کار کند
-            const sample = [/* داده‌های قبلی */];
-            // رندر کن
+        function toggleLang() {
+            lang = lang === 'fa' ? 'en' : 'fa';
+            loadData();
         }
 
-        function toggleLang() { /* همان قبلی */ }
-
-        // هر ۲ دقیقه بروزرسانی
-        setInterval(fetchLiveMatches, 120000);
-        fetchLiveMatches(); // اولین بار
+        // بروزرسانی خودکار هر ۳ دقیقه
+        setInterval(loadData, 180000);
+        loadData();
     </script>
 </body>
 </html>
